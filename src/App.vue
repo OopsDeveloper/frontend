@@ -9,6 +9,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import store from "@/scripts/store";
+import axios from "axios";
+import {useRoute} from "vue-router/dist/vue-router";
+import {watch} from "vue";
 
 export default {
   name: 'App',
@@ -17,12 +20,20 @@ export default {
     Header
   },
   setup() {
-    const id = sessionStorage.getItem("id");
+    const check = () => { // eslint-disable-line no-unused-vars
+      axios.get("/api/account/check").then(({data}) => {
+        console.log(data);
+        store.commit("setAccount", data || 0);
+      })
+    };
 
-    if (id) {
-      store.commit("setAccount", id);
-    }
-  },
+    const route = useRoute(); // eslint-disable-line no-unused-vars
+
+    watch(route, () => {
+      check();
+    })
+
+  }
 }
 </script>
 
